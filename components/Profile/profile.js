@@ -58,6 +58,7 @@ export default function Profile() {
         <View style={styles.dpContainer}>
           <ImageBackground
             style={styles.profileDp}
+            imageStyle={{ borderRadius: 100 }}
             source={{
               uri: "https://lh3.googleusercontent.com/znytw2BkzEYJv20Xp-0f8TMaopbemaVWLiRirBZ217Hxuo5vgX-KAKZDLdY3VojsYWXvfm5ollyUiAvecuwdNqzJ",
             }}
@@ -99,7 +100,7 @@ export default function Profile() {
         style={styles.saveProfileBtn}
         onPress={() => saveNewUser()}
       >
-        <Text style={styles.saveBtnTitle}>SUBMIT</Text>
+        <Text style={styles.saveBtnTitle}>SAVE</Text>
       </TouchableOpacity>
       <Text style={styles.errorText}>{errorText}</Text>
     </View>
@@ -112,16 +113,15 @@ const styles = StyleSheet.create({
     margin: 30,
   },
   dpContainer: {
-    height: 100,
+    height: 150,
     width: "100%",
-    borderRadius: 15,
     margin: 20,
     justifyContent: "center",
     alignItems: "center",
   },
   profileDp: {
-    height: 100,
-    width: 100,
+    height: 150,
+    width: 150,
   },
 
   cameraContainer: {
