@@ -35,6 +35,34 @@ export default function Profile() {
     setUserData({ ...userData, [name]: value });
   };
 
+  // const getUserData = () => {
+  useEffect(() => {
+    const onChildAdd = firebase
+      .database()
+      .ref("Accounts/-MbuZgTDSHv8D-W65UBa")
+      .on("value", (snapshot) => {
+        // console.log("User data: ", snapshot.val());
+        setUserData({
+          firstName: snapshot.val().firstName,
+          username: snapshot.val().username,
+          email: snapshot.val().email,
+        });
+      });
+    return () => firebase.database().ref("/Accounts").off("value", onChildAdd);
+  }, ["-MbuZgTDSHv8D-W65UBa"]);
+
+  const updateUser = async () => {
+    firebase
+      .database()
+      .ref("Accounts/" + "-MbuZgTDSHv8D-W65UBa")
+      .update({
+        firstName: userData.firstName,
+        email: userData.email,
+        username: userData.username,
+      });
+    alert("saved to database");
+  };
+
   const saveNewUser = async () => {
     if (userData.firstName === "") {
       alert("please provide a name");
@@ -42,7 +70,7 @@ export default function Profile() {
       const newRef = firebase.database().ref("/Accounts").push();
       await firebase
         .database()
-        .ref("Accounts/" + newRef + "Key2")
+        .ref("Accounts/" + newRef.key)
         .set({
           firstName: userData.firstName,
           email: userData.email,
@@ -74,6 +102,7 @@ export default function Profile() {
         <TextInput
           placeholder="First Name"
           style={styles.textInput}
+          value={userData.firstName}
           onChangeText={(value) => handleChangeText("firstName", value)}
         ></TextInput>
       </View>
@@ -83,6 +112,7 @@ export default function Profile() {
         <TextInput
           placeholder="Username"
           style={styles.textInput}
+          value={userData.username}
           onChangeText={(value) => handleChangeText("username", value)}
         ></TextInput>
       </View>
@@ -92,16 +122,23 @@ export default function Profile() {
           placeholder="Email Address"
           style={styles.textInput}
           keyboardType="email-address"
+          value={userData.email}
           onChangeText={(value) => handleChangeText("email", value)}
         ></TextInput>
       </View>
 
       <TouchableOpacity
         style={styles.saveProfileBtn}
-        onPress={() => saveNewUser()}
+        onPress={() => updateUser()}
       >
         <Text style={styles.saveBtnTitle}>SAVE</Text>
       </TouchableOpacity>
+      {/* <TouchableOpacity
+        style={styles.deleteProfileBtn}
+        onPress={() => saveNewUser()}
+      >
+        <Text style={styles.deleteBtnTitle}>DELETE</Text>
+      </TouchableOpacity> */}
       <Text style={styles.errorText}>{errorText}</Text>
     </View>
   );
@@ -156,5 +193,19 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginTop: 10,
     alignItems: "center",
+  },
+  saveBtnTitle: {
+    color: "white",
+  },
+  deleteProfileBtn: {
+    padding: 15,
+    width: "100%",
+    backgroundColor: "red",
+    borderRadius: 10,
+    marginTop: 15,
+    alignItems: "center",
+  },
+  deleteBtnTitle: {
+    color: "white",
   },
 });
