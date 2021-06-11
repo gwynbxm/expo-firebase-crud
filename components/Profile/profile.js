@@ -16,62 +16,42 @@ import {
 
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
-// import * as firebase from "firebase/app";
-import { firebaseApp } from "../../config.js";
+// previous version
+// import { firebaseApp } from "../../config.js";
 
-// const firebaseApp = firebase.initializeApp(firebaseConfig);
+//testing version
+// import firebase from "firebase/app";
+import firebase from "../../config.js";
 
 export default function Profile() {
   const [userData, setUserData] = useState({
-    email: "",
     firstName: "",
-    profilePic: "",
+    email: "",
     username: "",
   });
+  const [errorText, setErrorText] = useState("");
 
   const handleChangeText = (name, value) => {
     setUserData({ ...userData, [name]: value });
   };
 
-  // useEffect(() => {
-  //   handleUpdate();
-  // });
+  const saveNewUser = async () => {
+    if (userData.firstName === "") {
+      alert("please provide a name");
+    } else {
+      const newRef = firebase.database().ref("/Accounts").push();
+      await firebase
+        .database()
+        .ref("Accounts/" + newRef + "Key2")
+        .set({
+          firstName: userData.firstName,
+          email: userData.email,
+          username: userData.username,
+        });
+      alert("saved to database");
+    }
+  };
 
-  // const getUser = async () => {
-  //   const currentUser = await firebaseApp
-  //     .collection("Accounts")
-  //     .doc("key1")
-  //     .get()
-  //     .then((documentSnapshot) => {
-  //       if (documentSnapshot.exists) {
-  //         console.log("user data", documentSnapshot.data());
-  //         setUserData(documentSnapshot.data());
-  //       }
-  //     });
-  // };
-
-  // const handleUpdate = async () => {
-  //   // let imgUrl = await uploadImage();
-
-  //   firebase
-  //     .collection("Accounts")
-  //     .doc("key1")
-  //     .update({
-  //       fname: userData.fname,
-  //       username: userData.username,
-  //       email: userData.email,
-  //     })
-  //     .then(() => {
-  //       Alert.alert("Profile updated!");
-  //     });
-  // };
-
-  // function updateUser() {
-  //   return firebaseApp
-  //     .database()
-  //     .ref("Accounts/" + username)
-  //     .set({ username: "hi" });
-  // }
   return (
     <View style={styles.container}>
       <TouchableOpacity onPress={() => {}}>
@@ -117,10 +97,11 @@ export default function Profile() {
 
       <TouchableOpacity
         style={styles.saveProfileBtn}
-        onPress={() => console.log(userData)}
+        onPress={() => saveNewUser()}
       >
         <Text style={styles.saveBtnTitle}>SUBMIT</Text>
       </TouchableOpacity>
+      <Text style={styles.errorText}>{errorText}</Text>
     </View>
   );
 }
