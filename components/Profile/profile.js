@@ -35,7 +35,6 @@ export default function Profile() {
     setUserData({ ...userData, [name]: value });
   };
 
-  // const getUserData = () => {
   useEffect(() => {
     const onChildAdd = firebase
       .database()
@@ -60,7 +59,7 @@ export default function Profile() {
         email: userData.email,
         username: userData.username,
       });
-    alert("saved to database");
+    alert("updated user details!");
   };
 
   const saveNewUser = async () => {
@@ -76,8 +75,13 @@ export default function Profile() {
           email: userData.email,
           username: userData.username,
         });
-      alert("saved to database");
+      alert("saved to database!");
     }
+  };
+
+  const deleteUser = async () => {
+    await firebase.database().ref("/Accounts/-MbvBl1kkDbGNl6IR8nC").set(null);
+    alert("deleted user");
   };
 
   return (
@@ -126,19 +130,24 @@ export default function Profile() {
           onChangeText={(value) => handleChangeText("email", value)}
         ></TextInput>
       </View>
-
+      <TouchableOpacity
+        style={styles.createProfileBtn}
+        onPress={() => saveNewUser()}
+      >
+        <Text style={styles.createBtnTitle}>CREATE</Text>
+      </TouchableOpacity>
       <TouchableOpacity
         style={styles.saveProfileBtn}
         onPress={() => updateUser()}
       >
-        <Text style={styles.saveBtnTitle}>SAVE</Text>
+        <Text style={styles.saveBtnTitle}>UPDATE</Text>
       </TouchableOpacity>
-      {/* <TouchableOpacity
+      <TouchableOpacity
         style={styles.deleteProfileBtn}
-        onPress={() => saveNewUser()}
+        onPress={() => deleteUser()}
       >
         <Text style={styles.deleteBtnTitle}>DELETE</Text>
-      </TouchableOpacity> */}
+      </TouchableOpacity>
       <Text style={styles.errorText}>{errorText}</Text>
     </View>
   );
@@ -206,6 +215,18 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   deleteBtnTitle: {
+    color: "white",
+  },
+
+  createProfileBtn: {
+    padding: 15,
+    width: "100%",
+    backgroundColor: "darkgreen",
+    borderRadius: 10,
+    marginTop: 10,
+    alignItems: "center",
+  },
+  createBtnTitle: {
     color: "white",
   },
 });
